@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>无畏契约·本命溯源</title>
+    <style>
+        :root {
+            /* 瓦罗兰特专属电竞配色：瓦红、特务黑、灰白 */
+            --bg-base: #ece8e1;
+            --bg-texture: radial-gradient(circle at 50% -20%, #ffffff 0%, #ece8e1 60%);
+            
+            --card-glass: rgba(255, 255, 255, 0.95);
+            --card-border: rgba(15, 25, 35, 0.15);
+            --card-shadow: 0 16px 40px rgba(15, 25, 35, 0.08);
+            
+            --text-title: #0f1923;
+            --text-main: #333333;
+            --text-muted: #768079;
+            
+            --accent-red: #ff4655;
+            --accent-red-light: #ffe1e3;
+            --accent-dark: #0f1923;
+            --accent-dark-light: #dce2e0;
+            
+            --font-stack: "Tungsten", -apple-system, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Microsoft YaHei", sans-serif;
+            --radius-xl: 8px; /* 瓦罗兰特风格偏向硬朗的切角，所以圆角缩小 */
+            --radius-lg: 6px;
+            --radius-md: 4px;
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: var(--font-stack);
+            background: var(--bg-texture);
+            background-attachment: fixed;
+            color: var(--text-main);
+            min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            font-size: 16px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 520px;
+            min-height: 100vh;
+            margin: 0 auto;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .fade-in { animation: fadeIn 0.6s ease-out forwards; }
+        .slide-up { animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        /* ----- 封面页 ----- */
+        #page-intro {
+            padding: 50px 30px;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            min-height: 100vh; text-align: center;
+        }
+
+        .intro-title {
+            font-size: 48px; font-weight: 900; margin-bottom: 20px; text-transform: uppercase;
+            color: var(--text-title); letter-spacing: 4px; line-height: 1.2;
+        }
+        .intro-sub {
+            font-size: 16px; color: var(--text-muted); line-height: 1.8;
+            margin-bottom: 50px; font-weight: 600; letter-spacing: 1px;
+        }
+
+        .btn-primary {
+            background: var(--accent-red);
+            color: #fff; border: none; border-radius: var(--radius-md);
+            padding: 18px 55px; font-size: 20px; font-weight: 800; letter-spacing: 3px;
+            cursor: pointer; transition: var(--transition);
+            box-shadow: 0 8px 20px rgba(255, 70, 85, 0.3); text-transform: uppercase;
+        }
+        .btn-primary:active { transform: scale(0.96); box-shadow: 0 4px 10px rgba(255, 70, 85, 0.2); }
+
+        /* ----- 测试页 ----- */
+        #page-test { display: none; flex-direction: column; padding: 40px 26px; min-height: 100vh; }
+
+        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .dim-indicator { font-size: 14px; color: var(--accent-red); font-weight: 900; letter-spacing: 2px; text-transform: uppercase; }
+        .q-counter { font-size: 15px; color: var(--text-muted); font-weight: 700; font-family: monospace; }
+
+        .progress-track { width: 100%; height: 6px; background: #dce2e0; margin-bottom: 45px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--accent-red); width: 0%; transition: width 0.4s ease; }
+
+        .q-content { flex: 1; display: flex; flex-direction: column; }
+        .q-text { font-size: 22px; line-height: 1.6; font-weight: 800; color: var(--text-title); margin-bottom: 40px; }
+
+        .options-list { display: flex; flex-direction: column; gap: 14px; }
+        .opt-btn {
+            background: var(--card-glass); backdrop-filter: blur(10px); 
+            border: 2px solid transparent; box-shadow: 0 4px 15px rgba(15, 25, 35, 0.04);
+            padding: 20px; border-radius: var(--radius-md); font-size: 17px; color: var(--text-main); font-weight: 600;
+            cursor: pointer; transition: var(--transition); display: flex; align-items: center;
+        }
+        .opt-btn:hover { background: #fff; transform: translateX(5px); border-color: var(--accent-red-light); box-shadow: 0 8px 25px rgba(15, 25, 35, 0.08); }
+        .opt-btn:active { transform: scale(0.98); }
+        .opt-letter { 
+            color: #fff; background: var(--accent-dark); 
+            min-width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+            border-radius: 4px; margin-right: 18px; font-weight: 800; font-size: 16px; font-family: monospace;
+        }
+
+        .btn-back {
+            margin-top: auto; padding-top: 35px; align-self: center;
+            background: none; border: none; color: var(--text-muted);
+            font-size: 15px; cursor: pointer; transition: color 0.3s; font-weight: 700; letter-spacing: 1px;
+        }
+        .btn-back:hover { color: var(--accent-dark); }
+
+        /* ----- 结果页 ----- */
+        #page-result { display: none; min-height: 100vh; padding: 40px 22px 70px; }
+
+        /* 英雄名片与头像 */
+        .hero-id-card {
+            background: #fff; border-radius: var(--radius-xl);
+            padding: 40px 25px 35px; margin-bottom: 25px;
+            box-shadow: var(--card-shadow); border: 2px solid var(--card-border);
+            position: relative; text-align: center;
+        }
+        
+        .hero-image-box {
+            width: 200px; height: 200px;
+            margin: 25px auto;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            box-shadow: 0 12px 30px rgba(255, 70, 85, 0.15);
+            border: 4px solid var(--accent-dark);
+            background: #f8fafc;
+        }
+        .hero-image { width: 100%; height: 100%; object-fit: cover; }
+
+        .match-badge {
+            display: inline-flex; align-items: center; justify-content: center;
+            background: var(--accent-dark); color: #fff; padding: 8px 24px; 
+            font-weight: 800; font-size: 16px; margin-bottom: 18px; letter-spacing: 2px;
+            box-shadow: 0 6px 15px rgba(15, 25, 35, 0.3);
+        }
+
+        .res-role-badge {
+            display: inline-block; font-size: 14px; color: var(--accent-red); background: var(--accent-red-light);
+            padding: 6px 16px; border-radius: var(--radius-md); font-weight: 800; letter-spacing: 1px; margin-bottom: 15px;
+        }
+        .res-name { font-size: 52px; font-weight: 900; color: var(--text-title); letter-spacing: 2px; margin-bottom: 12px; text-transform: uppercase; }
+        .res-slogan { font-size: 17px; color: var(--text-muted); font-style: italic; font-weight: 600; }
+
+        /* 通用卡片样式 */
+        .card {
+            background: var(--card-glass); backdrop-filter: blur(12px); border: 1px solid var(--card-border);
+            border-radius: var(--radius-xl); padding: 30px; margin-bottom: 25px; box-shadow: var(--card-shadow);
+        }
+        .card-header {
+            font-size: 20px; color: var(--text-title); font-weight: 900; letter-spacing: 2px; text-transform: uppercase;
+            margin-bottom: 25px; display: flex; align-items: center; justify-content: center; position: relative;
+        }
+        .card-header::after {
+            content:''; position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%);
+            width: 40px; height: 4px; background: var(--accent-red); 
+        }
+
+        /* ----- 雷达图放大 ----- */
+        .radar-wrapper { display: flex; justify-content: center; margin: 15px 0; width: 100%; }
+        canvas { max-width: 100%; width: 340px; height: 310px;}
+
+        /* ----- 全新图谱：潜意识双极剖析 ----- */
+        .spectrum-container { display: flex; flex-direction: column; gap: 24px; padding-top: 15px; }
+        .spectrum-row { display: flex; flex-direction: column; gap: 10px; }
+        .spectrum-labels { display: flex; justify-content: space-between; font-size: 14px; color: var(--text-muted); font-weight: 800; }
+        .spectrum-labels .active-left { color: var(--accent-red); }
+        .spectrum-labels .active-right { color: var(--accent-dark); }
+        
+        .spectrum-track { 
+            width: 100%; height: 6px; background: #dce2e0; position: relative; 
+        }
+        .spectrum-marker {
+            position: absolute; top: 50%; transform: translate(-50%, -50%);
+            width: 16px; height: 16px; background: #fff; border: 4px solid var(--accent-dark);
+            box-shadow: 0 3px 8px rgba(0,0,0,0.25); transition: left 1.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        /* ----- 相似英雄推荐模块 ----- */
+        .similar-heroes-container {
+            display: flex; justify-content: space-between; gap: 12px; margin-top: 20px;
+        }
+        .similar-hero-card {
+            flex: 1; background: rgba(255,255,255,0.7); border-radius: var(--radius-md);
+            padding: 18px 10px 14px; text-align: center; border: 1px solid rgba(15,25,35,0.1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03); transition: var(--transition);
+        }
+        .similar-hero-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.08); border-color: var(--accent-red); }
+        .similar-hero-avatar {
+            width: 64px; height: 64px; margin: 0 auto 12px; border-radius: 4px;
+            overflow: hidden; border: 2px solid var(--accent-dark); box-shadow: 0 4px 12px rgba(15, 25, 35, 0.15);
+            background: var(--bg-base); position: relative;
+        }
+        .similar-hero-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .sim-name { font-size: 15px; font-weight: 900; color: var(--text-title); margin-bottom: 6px;}
+        .sim-percent { font-size: 13px; color: #fff; font-weight: 800; background: var(--accent-dark); padding: 4px 8px; border-radius: 2px; display: inline-block;}
+        
+        /* 图片加载失败的回退字母样式 */
+        .img-fallback {
+            width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
+            background: linear-gradient(135deg, var(--accent-red), #b22631);
+            color: #fff; font-size: 32px; font-weight: 900; font-family: monospace;
+        }
+        .similar-hero-avatar .img-fallback { font-size: 28px; }
+
+        /* ----- 判词与标签 ----- */
+        .res-desc { font-size: 16px; line-height: 1.9; color: var(--text-title); text-align: justify; margin-bottom: 25px; padding: 18px; background: #f3f4f6; border-radius: var(--radius-md); border-left: 4px solid var(--accent-red); font-weight: 600;}
+        .tags-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 15px; }
+        .hero-tag { font-size: 14px; color: #fff; background: var(--accent-dark); padding: 6px 15px; font-weight: 800; text-transform: uppercase;}
+
+        /* Loading */
+        #page-loading { display: none; height: 100vh; flex-direction: column; justify-content: center; align-items: center; }
+        .spinner { width: 55px; height: 55px; border: 4px solid var(--accent-dark-light); border-top-color: var(--accent-red); border-radius: 50%; animation: spin 0.8s cubic-bezier(0.6, 0.2, 0.4, 0.8) infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+<div id="page-intro" class="container">
+    <h1 class="intro-title">VALORANT<br><span style="font-size:32px; display:block; margin-top:12px; color:var(--accent-red); letter-spacing: 2px;">本命特工测试</span></h1>
+    <p class="intro-sub">
+        八大FPS战术维度 × 超立方体距离测算<br>
+        26位特工心理侧写模型<br>
+        寻找辐能位面中最真实的你
+    </p>
+    <button class="btn-primary" onclick="startTest()">匹配对局</button>
+</div>
+
+<div id="page-test" class="container">
+    <div class="top-bar">
+        <span class="dim-indicator" id="dim-text">DIMENSION 01</span>
+        <span class="q-counter" id="q-counter">1 / 24</span>
+    </div>
+    <div class="progress-track">
+        <div class="progress-fill" id="progress-bar"></div>
+    </div>
+
+    <div class="q-content" id="q-box">
+        <div class="q-text" id="q-text">加载中...</div>
+        <div class="options-list" id="opt-list"></div>
+    </div>
+
+    <button class="btn-back" id="btn-back" onclick="prevQ()">撤回上一步</button>
+</div>
+
+<div id="page-loading" class="container">
+    <div class="spinner"></div>
+    <p style="margin-top:28px; color:var(--text-title); font-size: 16px; font-weight:800; letter-spacing: 2px; text-transform: uppercase;">正在解析战术潜意识...</p>
+</div>
+
+<div id="page-result" class="container">
+    <!-- 特工名片与头像 -->
+    <div class="hero-id-card fade-in" style="animation-delay: 0.1s;">
+        <div class="match-badge" id="res-match-percent">契合度 98.5%</div>
+        <br>
+        <div class="res-role-badge" id="res-role">决斗</div>
+        <h2 class="res-name" id="res-name">特工名</h2>
+        
+        <div class="hero-image-box" id="avatar-box"></div>
+
+        <div class="res-slogan" id="res-slogan">"台词"</div>
+    </div>
+
+    <!-- 1. 八维雷达图 -->
+    <div class="card fade-in" style="animation-delay: 0.2s;">
+        <div class="card-header">特工战术能力雷达</div>
+        <div class="radar-wrapper">
+            <canvas id="radarChart" width="360" height="320"></canvas>
+        </div>
+    </div>
+
+    <!-- 2. 全新图谱：潜意识双极剖析 -->
+    <div class="card fade-in" style="animation-delay: 0.3s;">
+        <div class="card-header">个人战术倾向剖析</div>
+        <div class="spectrum-container" id="trait-bars"></div>
+    </div>
+    
+    <!-- 3. 相似特工推荐模块 -->
+    <div class="card fade-in" style="animation-delay: 0.4s;">
+        <div class="card-header">战术共鸣 · 备选特工</div>
+        <div class="similar-heroes-container" id="similar-heroes"></div>
+    </div>
+
+    <!-- 4. 特工判词 -->
+    <div class="card fade-in" style="animation-delay: 0.5s;">
+        <div class="card-header">系统评估报告</div>
+        <div class="tags-container" id="res-tags"></div>
+        <div class="res-desc" id="res-desc">描述内容</div>
+        
+        <button class="btn-primary" style="width:100%; margin-top:20px; padding:20px;" onclick="location.reload()">重新匹配</button>
+    </div>
+</div>
+
+<script>
+/**
+ * FPS/Valorant 八大维度 (24题)
+ * D0: 孤胆突破(0) vs 团队兜底(1)
+ * D1: 极致枪法(0) vs 战术大脑(1)
+ * D2: 激进前压(0) vs 稳健架点(1)
+ * D3: 简单粗暴/行动(0) vs 掌控信息(1)
+ * D4: 随性整活(0) vs 严谨上分(1)
+ * D5: 提速冲锋(0) vs 默认控图(1)
+ * D6: 近战突脸(0) vs 远距对枪(1)
+ * D7: 瞬间秒杀(0) vs 持续折磨(1)
+ */
+const questions = [
+    // D0
+    { text: "攻方开局，屏障降下的一瞬间，你通常的走位是：", dim: 0, opts: [{ t: "冲在队伍最前面，哪怕是死也要拉出空间", v: 0 }, { t: "紧跟在突破手后面，随时准备补枪换人", v: 0.33 }, { t: "在中路或侧翼挂着，防止对方前压绕后", v: 0.67 }, { t: "走在队伍最后面，背着辐能核心（包）最心安", v: 1 }]},
+    { text: "守方开局，发现自己防守的点位进了5个敌人，你会：", dim: 0, opts: [{ t: "直接拉出去尝试接客！万一我能换三个呢？", v: 0 }, { t: "躲在掩体死角，放他们进来打背身偷人", v: 0.33 }, { t: "扔道具和烟雾拖延时间，边打边退", v: 0.67 }, { t: "直接放弃点位保枪，等队友集合一起打回防", v: 1 }]},
+    { text: "残局1v2，包已放下，你的处理方式是：", dim: 0, opts: [{ t: "主动拉出去找人拼抢，各个击破", v: 0 }, { t: "静步绕后，尝试抓一个背身", v: 0.33 }, { t: "假拆滴包，骗对方露头再打", v: 0.67 }, { t: "死架包点死角，纯靠听声音等对方来拆包", v: 1 }]},
+    // D1
+    { text: "赛前热身，你花时间最多/最看重的是：", dim: 1, opts: [{ t: "靶场困难机器人练定位和甩枪", v: 0 }, { t: "死斗模式纯拼反应和对枪手感", v: 0.33 }, { t: "开自定义模式练习各个地图的预瞄位", v: 0.67 }, { t: "看比赛录像，背各种奇葩的道具和定点雷点位", v: 1 }]},
+    { text: "击杀敌人后，最让你感到满足和骄傲的是：", dim: 1, opts: [{ t: "纯靠本能反应一发定位爆头，自己都觉得离谱", v: 0 }, { t: "一次完美的急停和准星微调", v: 0.33 }, { t: "精准抓住了对方转点或看小地图的Timing", v: 0.67 }, { t: "用技能把对方逼入绝境，兵不血刃轻松收下", v: 1 }]},
+    { text: "遇到对面有个枪法碾压你们的“大哥”，你会：", dim: 1, opts: [{ t: "不服气，下回合必须找他正面对枪找回场子", v: 0 }, { t: "换把判官(喷子)或奥丁，在拐角教他做人", v: 0.33 }, { t: "呼叫队友，用闪光弹配合一起双拉他", v: 0.67 }, { t: "避其锋芒，他打A我就转B，靠战术运营赢", v: 1 }]},
+    // D2
+    { text: "作为防守方，如果你这把经济很好起了大狙(冥驹)：", dim: 2, opts: [{ t: "直接前顶到非常规位拿首杀，拿完就跑", v: 0 }, { t: "在主干道架第一枪，不管空没空直接撤退", v: 0.33 }, { t: "在后点长枪位死死架住过点", v: 0.67 }, { t: "根据对方进攻习惯，在最安全的包点深处架枪", v: 1 }]},
+    { text: "你在游戏中的按键习惯是：", dim: 2, opts: [{ t: "W键按碎，静步键几乎不存在", v: 0 }, { t: "大多数时间在跑，听见对面动静才开始静步", v: 0.33 }, { t: "习惯静步摸排，有绝对把握确定没人时才跑", v: 0.67 }, { t: "“Shift侠”，哪怕要绕地球一圈我也绝对不露脚步", v: 1 }]},
+    { text: "进攻方成功下包后，你的守包策略是：", dim: 2, opts: [{ t: "往前顶出去，把回防的人堵在半路杀掉", v: 0 }, { t: "藏在点外非常规位，等对方搜", v: 0.33 }, { t: "和队友形成交叉火力死死架枪", v: 0.67 }, { t: "躲在安全角落，纯靠丢技能拖延拆包时间", v: 1 }]},
+    // D3
+    { text: "进攻时，你最喜欢怎样突破防线？", dim: 3, opts: [{ t: "闪光/致盲一丢，直接干拉出去对枪", v: 0 }, { t: "封好烟雾弹遮蔽视线，然后带头冲锋", v: 0.33 }, { t: "先用无人机/机器狗探点，确认没人再进", v: 0.67 }, { t: "不断在另一路制造动静，骗出技能再打空点", v: 1 }]},
+    { text: "当你不知道敌方最后一名玩家位置时：", dim: 3, opts: [{ t: "主动前压出去找他决斗", v: 0 }, { t: "和队友抱团走一起，慢慢搜点", v: 0.33 }, { t: "在原地静步架枪，等对方沉不住气给声音", v: 0.67 }, { t: "看小地图分析他可能的转点路线，提前去截杀", v: 1 }]},
+    { text: "对你来说，最重要的技能类型是：", dim: 3, opts: [{ t: "纯粹的伤害类/高机动位移技能", v: 0 }, { t: "能瞬间剥夺敌方视觉的闪光/致盲", v: 0.33 }, { t: "能改变地图地形的烟雾/墙体", v: 0.67 }, { t: "能直接获取敌方位置的探测/透视技能", v: 1 }]},
+    // D4
+    { text: "在经济局(Eco)中，你的购买策略通常是：", dim: 4, opts: [{ t: "必须半甲+正义/狂徒，赌命尝试翻盘", v: 0 }, { t: "买把刺针或短管，蹲在门后老六位等有缘人", v: 0.33 }, { t: "随便买把手枪过度，确保下回合能起大枪", v: 0.67 }, { t: "和全队统一战线，算好经济该存钱绝对不花一分", v: 1 }]},
+    { text: "连败几局心态爆炸时，你会：", dim: 4, opts: [{ t: "开始起判官/奥丁乱莽，纯搞对方心态", v: 0 }, { t: "开麦抱怨几句匹配机制或运气太差", v: 0.33 }, { t: "闭麦静音，默默打好自己的枪", v: 0.67 }, { t: "深呼吸，主动承担指挥职责，调动队伍气氛", v: 1 }]},
+    { text: "选特工阶段，如果队伍缺烟位(控场)：", dim: 4, opts: [{ t: "缺就缺，直接秒锁我最爱玩的决斗者", v: 0 }, { t: "犹豫一下，还是选自己手感最热的绝活英雄", v: 0.33 }, { t: "开麦和队友商量，看谁能来补个烟", v: 0.67 }, { t: "为了团队的胜利，默默锁下控场者", v: 1 }]},
+    // D5
+    { text: "指挥喊“这把打A”，你的执行方式是：", dim: 5, opts: [{ t: "倒计时一结束，直接按W冲进A包点", v: 0 }, { t: "在A大集合，等给完第一波技能后再同步进", v: 0.33 }, { t: "先在中路给点动静骗防守，然后再转A", v: 0.67 }, { t: "在B点挂着，等队友A点打起来吸引火力我再摸屁股", v: 1 }]},
+    { text: "对方防守非常严密，你们屡攻不下，此时你会建议：", dim: 5, opts: [{ t: "别墨迹了，大家一起Rush一个点，用枪法硬撕开", v: 0 }, { t: "我起大狙去尝试拿个首杀破局", v: 0.33 }, { t: "增加假打配合，用技能和脚步骗他们疯狂转点", v: 0.67 }, { t: "极致的默认展开，先抢中路控制权，慢慢压缩他们空间", v: 1 }]},
+    { text: "作为进攻方开局，你的第一动向通常是：", dim: 5, opts: [{ t: "第一时间冲出去抢占主干道前点位置", v: 0 }, { t: "跟随大部队一起行动", v: 0.33 }, { t: "一个人静步去控地图的中路区域", v: 0.67 }, { t: "在老家死死架着，防止对方激进前压偷人", v: 1 }]},
+    // D6
+    { text: "你最偏爱的武器类型是：", dim: 6, opts: [{ t: "狂怒/判官/冲锋枪，享受近距离融化敌人的快感", v: 0 }, { t: "狂徒(Vandal)，一发爆头的全能利器", v: 0.33 }, { t: "幻影(Phantom)，稳健泼水、穿烟无弹道", v: 0.67 }, { t: "冥驹(Op)/捍卫者，千里之外一发入魂", v: 1 }]},
+    { text: "在“意境空岛”等多重高低差的复杂地形中：", dim: 6, opts: [{ t: "喜欢钻进各种小道和管道里和敌人短兵相接", v: 0 }, { t: "喜欢利用箱子和掩体玩高低差Peek", v: 0.33 }, { t: "喜欢在相对空旷的区域依靠身法拉扯", v: 0.67 }, { t: "喜欢在视野极长的长廊死架大狙", v: 1 }]},
+    { text: "面对敌方封堵视线的烟雾弹，你会：", dim: 6, opts: [{ t: "直接强行混烟冲出去，给他们一个Surprise", v: 0 }, { t: "扔个闪光弹或技能，然后再混出去", v: 0.33 }, { t: "藏在烟雾边缘做“烟中恶鬼”等有缘人", v: 0.67 }, { t: "绝不碰烟，换个角度远远地架着烟后", v: 1 }]},
+    // D7
+    { text: "你的射击瞄准习惯是：", dim: 7, opts: [{ t: "见到人无论多远，先执着地单点一枪头", v: 0 }, { t: "两发或三发的短连发点射", v: 0.33 }, { t: "瞄准胸口附近，直接开始下蹲泼水压枪", v: 0.67 }, { t: "乱战中不管三七二十一，按住左键不撒手扫射靠量取胜", v: 1 }]},
+    { text: "对于特工的终极技能(大招)，你更希望它：", dim: 7, opts: [{ t: "像晚安焰火/飞刀一样能直接瞬间收割人头", v: 0 }, { t: "像大地震颤/全面封锁一样能拿大范围瞬间控制", v: 0.33 }, { t: "像复活/蝰蛇领域一样直接改变战局的底层规则", v: 0.67 }, { t: "像天罗地网一样让敌人深陷其中，慢性死亡", v: 1 }]},
+    { text: "战斗中，你觉得最爽的时刻是：", dim: 7, opts: [{ t: "瞬间拉枪一发爆头的清脆“叮”声", v: 0 }, { t: "混战中连杀两人完成突破", v: 0.33 }, { t: "技能完美Combo导致对方动弹不得被队友击杀", v: 0.67 }, { t: "看见敌人在你的毒/火中绝望挣扎，慢慢被烧死", v: 1 }]}
+];
+
+// 26位无畏契约全英雄库 (25位正式 + 1位隐藏彩蛋靶场机器人)
+// 雷达图标签：["爆发秒杀", "残局生存", "战术协同", "经济运营", "信息控制", "突破游走", "操作门槛", "阵地防守"]
+const rawHeroData = [
+    "捷风 (Jett)|风来了！|决斗|顺风而行,究极突破|你是队伍中最锐利的尖刀。无与伦比的机动性让你能在战场上随心所欲，依靠极致的个人能力瞬间撕裂敌方防线。|9,6,3,5,2,10,9,3|00000000",
+    "蕾娜 (Reyna)|他们将会畏惧我！|决斗|极致枪法,吸血残局|你是纯粹的杀戮机器。你的技能全为你的枪法服务，只要能拿到首杀，你就能像滚雪球一样主宰整个战局。|10,9,2,6,1,9,7,3|00000001",
+    "不死鸟 (Phoenix)|好戏开场了！|决斗|自我供给,全能突破|你是自信心爆棚的明星。喜欢自己打闪自己出，技能的多样性让你极具独立作战能力，大招更是给你一往无前的底气。|8,7,5,5,4,8,4,4|00000010",
+    "霓虹 (Neon)|我来带头冲锋！|决斗|电光火石,滑铲狂人|你是战场上跑得最快的人。享受风驰电掣的感觉，敌人甚至来不及反应，就被你极限的滑铲乱枪带走。|8,4,4,5,2,10,8,3|00000011",
+    "夜露 (Yoru)|我来接管这里。|决斗|诡计多端,心理博弈|你是战场上的魔术师。喜欢用假脚步和传送把敌人耍得团团转，相比硬拼，你更享受智商碾压的快感。|8,6,5,5,6,9,10,3|01010100",
+    "瑞兹 (Raze)|准备爆炸吧！|决斗|火力覆盖,立体机动|你是个享受爆炸艺术的疯子。炸药包赋予了你上天入地的能力，手里的火箭筒是所有喜欢死守的老六的噩梦。|9,5,4,5,4,9,8,4|00010000",
+    "壹决 (Iso)|现在，是单挑时间。|决斗|强制单挑,护盾神射|你是冷静的职业杀手。大招强行拉入绝对领域单挑，说明你对自己纯粹的枪法对决有着常人难以企及的自信。|9,7,3,5,3,7,8,4|00001010",
+
+    "猎枭 (Sova)|我乃猎手。|先锋|信息收集,几何箭术|你是团队的超级天眼。精通各种复杂的几何箭点位，没有敌人能在你的侦测下遁形，是极致战术的代名词。|5,6,9,6,10,3,7,6|11111110",
+    "铁臂 (Breach)|去清场了！|先锋|穿墙打击,极致震撼|你是破坏阵型的推土机。你的技能无视掩体，专门用来恶心躲在死角里的敌人，给队友创造最完美的进场环境。|7,4,9,5,9,4,5,5|11011000",
+    "斯凯 (Skye)|去搜寻他们！|先锋|全能辅助,信息闪光|你与自然为伴。既能放出猛兽探路、致盲敌人，还能在关键时刻治疗队友，是团队最坚实、最全能的后盾。|6,6,9,6,9,5,7,5|11011001",
+    "K/O (KAY/O)|开始压制！|先锋|禁用技能,铁血执行|你是为战争而生的机器。你的匕首能让所有花里胡哨的技能失效，逼迫敌人必须和你进行最纯粹的枪法较量。|7,5,8,6,9,6,6,6|10011010",
+    "暮蝶 (Fade)|面对你的恐惧吧。|先锋|梦魇追踪,恐吓压制|你是掌控梦魇的猎手。用黑暗的触手束缚敌人，让他们在恐慌中暴露位置，失去所有反抗的能力。|6,5,9,5,10,4,6,5|11011101",
+    "盖可 (Gekko)|去吧，小兄弟！|先锋|宠物召唤,回收利用|你带着一群可爱的小伙伴并肩作战。让皮蛋去下包拆包，用星号去致盲，你的打法充满了极高的经济运营与欢乐。|6,7,9,8,8,5,5,6|11000001",
+
+    "炼狱 (Brimstone)|准备迎接天火！|控场|老牌指挥,精准封烟|你是团队最可靠的老大哥。用平板精准布置极其持久的烟雾和天火，为团队铺平道路，是指挥位的不二之选。|6,5,9,5,9,3,3,7|11101011",
+    "蝰蛇 (Viper)|别拦着我的道。|控场|毒幕切割,折磨之王|你是掌控毒液的女王。你的毒幕和毒云不仅能遮蔽视野，更能慢慢蚕食敌人的血量，在残局中令人绝望。|5,8,8,5,10,3,8,9|11111111",
+    "幽影 (Omen)|蒙蔽他们的双眼。|控场|全图支援,暗影穿梭|你是在阴影中游荡的刺客型烟位。你不仅能给烟，还喜欢用传送来到敌人的视觉盲区，给他们一个致命的惊吓。|7,7,8,5,9,7,7,6|11010001",
+    "星礈 (Astra)|星辰指引着我。|控场|全局掌控,星空布局|你拥有神明般的全局视角。在星界形态下提前布置所有陷阱和烟雾，你的防守与进攻都充满着深邃的智慧。|5,5,10,5,10,3,10,8|11111101",
+    "哈泊 (Harbor)|潮水涌动！|控场|水墙推进,移动掩体|你驾驭着古老的流水之力。用巨大的水墙推平敌人的防线，非常适合配合团队进行大兵压境的提速进攻。|5,6,8,5,9,5,6,6|11011001",
+    "幽蝶 (Clove)|死亡只是个开始。|控场|死后给烟,极致激进|你是第一个鼓励去死拼的烟位。即便阵亡也能继续为团队提供视野遮蔽，大招更是给你再来一次的拼命机会。|7,8,6,5,8,7,4,5|00000110",
+
+    "贤者 (Sage)|我不允许你死！|守卫|起死回生,叹息之墙|你是队伍中不可或缺的医疗兵。用冰墙阻断道路，用减速拖延时间，大招的复活往往能直接逆转比赛的走势。|4,8,9,6,7,2,3,8|11101011",
+    "零 (Cypher)|我确切知道你在哪儿。|守卫|极致偷窥,信息情报|你是最让人毛骨悚然的情报商。你的绊线和摄像头遍布角落，当敌人的行踪尽在掌握时，他们就已经输了。|4,7,8,7,10,3,7,9|11111111",
+    "奇乐 (Killjoy)|他们完全没有机会。|守卫|天才发明,阵地防守|你是科技防守的专家。你的炮塔和机器人能够完美封锁一个包点，让所有试图踏入你领地的敌人痛不欲生。|4,6,8,7,9,2,5,10|11111011",
+    "尚勃勒 (Chamber)|他们想要玩玩，那就来吧。|守卫|经济大师,专属神射|你是最有钱的西装暴徒。作为守卫却有一颗决斗者的心，凭借专属武器和传送，总能在极远距离无损拿首杀。|9,8,4,10,6,6,8,8|00101010",
+    "钢锁 (Deadlock)|没人能逃脱我的掌控。|守卫|网罗声场,强制禁锢|你用最先进的纳米网线狩猎敌人。依靠声音探测陷阱和声波网，你的防区犹如铁桶一般密不透风。|5,6,7,5,8,3,6,9|11111100",
+    "维斯 (Vyse)|玫瑰之下，尽是荆棘。|守卫|缴械铁棘,防前压核心|你用液态金属布置着死亡陷阱。不仅能限制位移，大招更能直接缴械对手的枪械，是极具压制力的防守方。|6,6,8,5,9,3,6,9|11111101",
+    
+    "靶场机器人 (Bot)|（金属被击中的当啷声）|隐藏|抗压王者,毫无怨言|你是一个被系统隐藏的彩蛋！在团队中往往是默默挨打、背锅的那一个，但没有你的无私奉献，大家怎么能变强呢？|1,1,10,10,1,1,1,1|11110000"
+];
+
+const heroLibrary = [];
+rawHeroData.forEach(row => {
+    const parts = row.split('|');
+    heroLibrary.push({
+        name: parts[0], 
+        slogan: parts[1], 
+        role: parts[2],
+        tags: parts[3], 
+        desc: parts[4], 
+        stats: parts[5].split(',').map(Number),
+        bin: parts[6] 
+    });
+});
+
+let currentQ = 0;
+let scores = [0, 0, 0, 0, 0, 0, 0, 0]; 
+let historyStack = [];
+
+function startTest() {
+    document.getElementById('page-intro').style.display = 'none';
+    document.getElementById('page-test').style.display = 'flex';
+    renderQ();
+}
+
+function renderQ() {
+    const q = questions[currentQ];
+    document.getElementById('progress-bar').style.width = ((currentQ + 1) / 24 * 100) + '%';
+    document.getElementById('q-counter').innerText = `Q. ${currentQ + 1} / 24`;
+    const dimNames = ["D1: 团队定位", "D2: 决策倾向", "D3: 节奏偏好", "D4: 行动风格", "D5: 比赛心态", "D6: 战术运营", "D7: 距离偏好", "D8: 击杀节奏"];
+    document.getElementById('dim-text').innerText = dimNames[q.dim];
+
+    const qBox = document.getElementById('q-box');
+    qBox.classList.remove('slide-up');
+    void qBox.offsetWidth;
+    qBox.classList.add('slide-up');
+
+    document.getElementById('q-text').innerText = q.text;
+    
+    const optList = document.getElementById('opt-list');
+    optList.innerHTML = '';
+    const letters = ['A', 'B', 'C', 'D'];
+    q.opts.forEach((opt, idx) => {
+        const btn = document.createElement('div');
+        btn.className = 'opt-btn';
+        btn.innerHTML = `<span class="opt-letter">${letters[idx]}</span> <span style="flex:1;">${opt.t}</span>`;
+        btn.onclick = () => handleAnswer(q.dim, opt.v);
+        optList.appendChild(btn);
+    });
+    document.getElementById('btn-back').style.visibility = currentQ === 0 ? 'hidden' : 'visible';
+}
+
+function handleAnswer(dim, val) {
+    historyStack.push({ dim, val });
+    scores[dim] += val;
+    if (currentQ < 23) {
+        currentQ++;
+        setTimeout(renderQ, 150);
+    } else {
+        showLoading();
+    }
+}
+
+function prevQ() {
+    if (currentQ > 0 && historyStack.length > 0) {
+        const lastAction = historyStack.pop();
+        scores[lastAction.dim] -= lastAction.val;
+        currentQ--;
+        renderQ();
+    }
+}
+
+function showLoading() {
+    document.getElementById('page-test').style.display = 'none';
+    document.getElementById('page-loading').style.display = 'flex';
+    setTimeout(calcResult, 2500);
+}
+
+// 核心还原：8维超立方体距离理论计算
+function calcResult() {
+    heroLibrary.forEach(h => {
+        let diffBin = 0;
+        let diffStat = 0;
+        
+        for(let i=0; i<8; i++) {
+            // 宏观距离 (Binary) 
+            let idealScore = h.bin[i] === "1" ? 3 : 0;
+            diffBin += Math.abs(scores[i] - idealScore);
+            
+            // 微观雷达差距
+            let userStatMapped = 1 + (scores[i] / 3) * 9; 
+            diffStat += Math.abs(userStatMapped - h.stats[i]);
+        }
+        
+        let basePercent = ((24 - diffBin) / 24) * 100;
+        let tieBreaker = (diffStat / 72) * 0.1; 
+        h.currentMatch = basePercent - tieBreaker;
+    });
+
+    heroLibrary.sort((a, b) => b.currentMatch - a.currentMatch);
+
+    const bestHero = heroLibrary[0];
+    const similarHeroes = [heroLibrary[1], heroLibrary[2], heroLibrary[3]];
+
+    renderResult(bestHero, scores, bestHero.currentMatch, similarHeroes);
+}
+
+// 图片加载防崩与首字母降级 (瓦罗兰特专属适配 - Webp版)
+function loadHeroImage(imgElement, heroName) {
+    // 移除括号和英文，例如 "捷风 (Jett)" 变成 "捷风"
+    let nameTrimmed = heroName.split('(')[0].trim();
+    let nameEng = heroName.match(/\((.*?)\)/)?.[1] || "";
+    
+    // 【新增】特殊字符净化：移除斜杠，防止文件路径解析错误。例如将 K/O 变为 KO，KAY/O 变为 KAYO
+    nameTrimmed = nameTrimmed.replace(/\//g, '');
+    nameEng = nameEng.replace(/\//g, '');
+    
+    // 根据要求，仅搜索 webp 格式
+    const exts = ['.webp'];
+    const paths = [];
+    
+    // 尝试中文名和英文名
+    const namesToTry = [nameTrimmed, nameEng.toLowerCase(), nameEng];
+    namesToTry.forEach(n => {
+        if(n) {
+            // 将文件夹路径从 images/ 修改为 user 指定的 image/
+            exts.forEach(e => paths.push(`image/${n}${e}`));
+        }
+    });
+    
+    let idx = 0;
+    
+    imgElement.onerror = function() {
+        idx++;
+        if (idx < paths.length) {
+            imgElement.src = paths[idx];
+        } else {
+            const parent = imgElement.parentElement;
+            if(!parent.querySelector('.img-fallback')) {
+                // 提取首字母：中文首字，或者英文首字母
+                let fallbackChar = nameTrimmed ? nameTrimmed.charAt(0) : (nameEng ? nameEng.charAt(0).toUpperCase() : "?");
+                parent.innerHTML = `<div class="img-fallback">${fallbackChar}</div>`;
+            }
+            imgElement.onerror = null; 
+        }
+    };
+    imgElement.src = paths[0];
+}
+
+function renderResult(res, rawScores, percent, similarHeroes) {
+    document.getElementById('page-loading').style.display = 'none';
+    document.getElementById('page-result').style.display = 'block';
+
+    const avatarBox = document.getElementById('avatar-box');
+    avatarBox.innerHTML = `<img class="hero-image" alt="${res.name}">`;
+    loadHeroImage(avatarBox.querySelector('img'), res.name);
+
+    document.getElementById('res-match-percent').innerText = `契合度 ${(percent).toFixed(1)}%`;
+    document.getElementById('res-name').innerText = res.name.split(' ')[0]; // 只显示中文主名放大
+    document.getElementById('res-slogan').innerText = `“${res.slogan}”`;
+    document.getElementById('res-desc').innerText = res.desc;
+    document.getElementById('res-role').innerText = res.role;
+    const tags = res.tags.split(',');
+    document.getElementById('res-tags').innerHTML = tags.map(t => `<span class="hero-tag">#${t}</span>`).join('');
+
+    renderSpectrumBars(rawScores);
+    setTimeout(() => { drawRadar(res.stats); }, 400);
+
+    const simContainer = document.getElementById('similar-heroes');
+    simContainer.innerHTML = similarHeroes.map(h => `
+        <div class="similar-hero-card">
+            <div class="similar-hero-avatar">
+                <img alt="${h.name}">
+            </div>
+            <div class="sim-name">${h.name.split(' ')[0]}</div>
+            <div class="sim-percent">${h.currentMatch.toFixed(1)}%</div>
+        </div>
+    `).join('');
+
+    const simImgs = simContainer.querySelectorAll('img');
+    similarHeroes.forEach((h, index) => {
+        loadHeroImage(simImgs[index], h.name);
+    });
+}
+
+function renderSpectrumBars(rawScores) {
+    const container = document.getElementById('trait-bars');
+    const traitNames = [
+        ["孤胆突破", "团队兜底"], ["极致枪法", "战术大脑"], ["激进前压", "稳健架点"],
+        ["直接干拉", "掌控信息"], ["随性整活", "严谨上分"], ["提速冲锋", "默认控图"], 
+        ["近战突脸", "远距对枪"], ["瞬间秒杀", "持续折磨"]
+    ];
+    let html = '';
+    for(let i=0; i<8; i++) {
+        const percent = Math.max(5, Math.min(95, (rawScores[i] / 3) * 100));
+        const isLeft = percent <= 50;
+        html += `
+        <div class="spectrum-row">
+            <div class="spectrum-labels">
+                <span class="${isLeft ? 'active-left' : ''}">${traitNames[i][0]}</span>
+                <span class="${!isLeft ? 'active-right' : ''}">${traitNames[i][1]}</span>
+            </div>
+            <div class="spectrum-track">
+                <div class="spectrum-marker" style="left: ${percent}%;"></div>
+            </div>
+        </div>`;
+    }
+    container.innerHTML = html;
+}
+
+function drawRadar(stats) {
+    const canvas = document.getElementById('radarChart');
+    const ctx = canvas.getContext('2d');
+    const dpr = window.devicePixelRatio || 1;
+    const w = canvas.clientWidth; const h = canvas.clientHeight;
+    canvas.width = w * dpr; canvas.height = h * dpr;
+    ctx.scale(dpr, dpr);
+
+    const cx = w / 2; const cy = h / 2 + 5;
+    const r = Math.min(w, h) / 2.8; 
+    const sides = 8;
+    const labels = ["爆发秒杀", "残局生存", "战术协同", "经济运营", "信息控制", "突破游走", "操作门槛", "阵地防守"];
+
+    ctx.lineWidth = 1;
+    for(let i=1; i<=4; i++) {
+        ctx.beginPath();
+        for(let j=0; j<sides; j++) {
+            const angle = (Math.PI*2/sides)*j - Math.PI/2;
+            const radius = (r/4)*i;
+            if(j===0) ctx.moveTo(cx + Math.cos(angle)*radius, cy + Math.sin(angle)*radius);
+            else ctx.lineTo(cx + Math.cos(angle)*radius, cy + Math.sin(angle)*radius);
+        }
+        ctx.closePath();
+        ctx.strokeStyle = i === 4 ? '#dce2e0' : '#ece8e1';
+        ctx.stroke();
+    }
+
+    ctx.beginPath();
+    for(let j=0; j<sides; j++) {
+        const angle = (Math.PI*2/sides)*j - Math.PI/2;
+        ctx.moveTo(cx, cy); ctx.lineTo(cx + Math.cos(angle)*r, cy + Math.sin(angle)*r);
+    }
+    ctx.strokeStyle = '#ece8e1'; ctx.stroke();
+
+    ctx.beginPath();
+    for(let j=0; j<sides; j++) {
+        const angle = (Math.PI*2/sides)*j - Math.PI/2;
+        let val = Math.max(0.15, stats[j]/10); 
+        if(j===0) ctx.moveTo(cx + Math.cos(angle)*r*val, cy + Math.sin(angle)*r*val);
+        else ctx.lineTo(cx + Math.cos(angle)*r*val, cy + Math.sin(angle)*r*val);
+    }
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(255, 70, 85, 0.2)'; 
+    ctx.fill();
+    ctx.strokeStyle = '#ff4655'; 
+    ctx.lineWidth = 2.5; 
+    ctx.stroke();
+    
+    for(let j=0; j<sides; j++) {
+        const angle = (Math.PI*2/sides)*j - Math.PI/2;
+        let val = Math.max(0.15, stats[j]/10); 
+        ctx.beginPath(); ctx.arc(cx + Math.cos(angle)*r*val, cy + Math.sin(angle)*r*val, 5, 0, Math.PI*2);
+        ctx.fillStyle = '#fff'; ctx.fill();
+        ctx.strokeStyle = '#ff4655'; ctx.lineWidth = 2.5; ctx.stroke();
+    }
+
+    ctx.fillStyle = '#0f1923'; ctx.font = '800 14px sans-serif';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    
+    for(let j=0; j<sides; j++) {
+        const angle = (Math.PI*2/sides)*j - Math.PI/2;
+        const dist = r + 26; 
+        ctx.fillText(labels[j], cx + Math.cos(angle)*dist, cy + Math.sin(angle)*dist);
+    }
+}
+</script>
+
+<!-- 
+  =======================================================
+  🔒 网页防伪提示锁 (米大师定制版) - 移动端完美适配版
+  使用说明：
+  1. 修改 MAX_USES 为限制的次数（默认6次）。
+  2. 将代码粘贴到网页文件的 </body> 标签之前。
+  =======================================================
+-->
+
+<style>
+    /* 锁屏界面样式 */
+    #gate-modal {
+        position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+        background: #ffffff;
+        z-index: 2147483647;
+        display: flex; flex-direction: column; 
+        /* 【修复 1】移除 justify-content: center; 改为允许垂直滚动 */
+        overflow-y: auto; 
+        padding: 40px 20px; /* 增加上下 padding 防止贴边 */
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+        transition: opacity 0.5s;
+    }
+    
+    .gate-card {
+        background: #fff; width: 100%; max-width: 340px; padding: 40px 30px;
+        border-radius: 24px; 
+        box-shadow: 0 15px 50px rgba(0,0,0,0.08); text-align: center;
+        border: 1px solid #fff5f7; 
+        /* 【修复 2】使用 margin: auto 进行安全的垂直居中。屏幕太小时会自动顶对齐并允许滚动 */
+        margin: auto;
+        position: relative;
+        overflow: hidden;
+        /* 【修复 3】严格控制盒模型，防止 padding 撑破容器 */
+        box-sizing: border-box; 
+    }
+    
+    /* 视图切换容器 */
+    .view-container {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        animation: fadeIn 0.4s ease;
+        width: 100%;
+    }
+    .view-container.active {
+        display: flex;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* 头像样式 */
+    .avatar-wrapper {
+        width: 80px; height: 80px;
+        background: #ffe6eb; 
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        margin: 0 auto 12px;
+        font-size: 42px;
+        border: 3px solid #fff;
+        box-shadow: 0 4px 15px rgba(255, 36, 66, 0.15);
+    }
+
+    .brand-tag {
+        display: inline-block;
+        background: #f8f8f8;
+        color: #999;
+        font-size: 11px;
+        padding: 4px 12px;
+        border-radius: 20px;
+        margin-bottom: 20px;
+        letter-spacing: 0.5px;
+    }
+    
+    .gate-title { font-size: 20px; font-weight: 800; color: #333; margin-bottom: 12px; line-height: 1.4; }
+    
+    .gate-desc { 
+        font-size: 14px; color: #666; margin-bottom: 25px; 
+        line-height: 1.6; 
+    }
+
+    /* 按钮样式 */
+    .action-btn {
+        width: 100%; padding: 15px; border-radius: 50px; 
+        font-size: 15px; font-weight: bold; cursor: pointer; 
+        transition: all 0.2s; margin-bottom: 12px;
+        border: none; outline: none;
+        /* 【修复 4】确保按钮自身尺寸计算包含 padding */
+        box-sizing: border-box;
+        display: flex; align-items: center; justify-content: center; flex-wrap: wrap;
+        line-height: 1.4;
+    }
+    .action-btn:active { transform: scale(0.98); }
+
+    .btn-primary {
+        background: linear-gradient(90deg, #ff2442, #ff5e75);
+        color: white; 
+        box-shadow: 0 4px 15px rgba(255, 36, 66, 0.3);
+    }
+    .btn-secondary {
+        background: #f5f5f5;
+        color: #666;
+    }
+    .btn-secondary:hover { background: #eeeeee; }
+
+    .gate-err { 
+        color: #ff2442; font-size: 13px; margin-top: 5px; height: 18px; 
+        opacity: 0; transition: opacity 0.3s; font-weight: 600; 
+    }
+    
+    .loading-layer {
+        position: absolute; top:0; left:0; right:0; bottom:0; background:rgba(255,255,255,0.98);
+        display: none; flex-direction: column;
+        align-items: center; justify-content: center; z-index: 10;
+    }
+    .spinner {
+        width: 32px; height: 32px; border: 3px solid #ffe6eb;
+        border-top: 3px solid #ff2442; border-radius: 50%;
+        animation: spin 1s linear infinite; margin-bottom: 15px;
+    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+</style>
+
+<div id="gate-modal">
+    <div class="gate-card" id="main-card">
+        
+        <!-- ================= 视图1：防伪提问 ================= -->
+        <div class="view-container active" id="view-question">
+            <div class="avatar-wrapper" style="background: #f0f7ff; box-shadow: 0 4px 15px rgba(36, 131, 255, 0.15);">🐱</div>
+            <div class="gate-title">温馨提示</div>
+            <div class="gate-desc" style="color: #333; font-weight: 500;">
+                为了保障您的体验<br>请问您购买本测试的店铺是<br><span style="color:#ff2442; font-weight:bold; font-size:16px;">“心理米大师的店”</span> 吗？
+            </div>
+            
+            <button class="action-btn btn-primary" onclick="switchView('view-cover')">
+                对，确认无误，就是<span style="font-size: 18px; font-weight: 900; color: #ffe895; text-shadow: 0 1px 3px rgba(0,0,0,0.2); margin-left: 4px;">心理米大师</span>
+            </button>
+            <button class="action-btn btn-secondary" onclick="switchView('view-warning')">
+                好像不是，可能是别的店铺
+            </button>
+        </div>
+
+        <!-- ================= 视图2：正版欢迎页 ================= -->
+        <div class="view-container" id="view-cover">
+            <div class="avatar-wrapper">😻</div>
+            <div class="gate-title">米大师的私密测试空间</div>
+            <div class="brand-tag">@心理米大师 · 专注高质量心理测试</div>
+            
+            <div class="gate-desc">
+                Hi 宝子 👋<br>
+                <strong style="color:#ff2442;">请认准心理米大师</strong><br>
+                小店所有测试都是本人亲自制作<br>
+                欢迎宝子们进店选购 ✨
+            </div>
+            
+            <button class="action-btn btn-primary" onclick="unlockPage()">✨ 开启专属测试 ✨</button>
+            <div class="gate-err" id="gate-msg"></div>
+            
+            <!-- 剩余次数提示 -->
+            <div style="margin-top:10px; font-size:11px; color:#bbb;" id="limit-hint"></div>
+        </div>
+
+        <!-- ================= 视图3：盗版提示页 ================= -->
+        <div class="view-container" id="view-warning">
+            <div class="avatar-wrapper" style="background: #fff0f0;">😿</div>
+            <div class="gate-title">好像遇到盗版了...</div>
+            
+            <div class="gate-desc" style="text-align: left;">
+                麻烦宝子仔细确认一下，如果店铺名称确实不叫<strong style="color:#ff2442;">心理米大师</strong>，麻烦您帮我举报一下哦！<br><br>
+                如果可以私信告诉我，那就更好啦，非常感谢你的支持和正义感 ❤️
+            </div>
+            
+            <button class="action-btn btn-secondary" onclick="switchView('view-question')">返回重新选择</button>
+        </div>
+
+        <!-- 动画层 -->
+        <div class="loading-layer" id="load-layer">
+            <div class="spinner"></div>
+            <div style="font-size:13px; color:#333; font-weight:bold;" id="load-text">正在加载...</div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // ================= 配置区域 =================
+    const MAX_USES = 10;                // 同一台设备限制的次数
+    // ==========================================
+
+    const pageId = window.location.pathname; // 区分不同页面的缓存
+    const usageKey = 'usage_count_' + pageId; // 本地存储Key
+
+    // 1. 检查Session（本次会话是否已解锁）
+    if (sessionStorage.getItem('unlocked_' + pageId)) {
+        document.getElementById('gate-modal').style.display = 'none';
+    }
+
+    // 2. 初始化显示剩余次数
+    function updateLimitUI() {
+        let currentUsage = parseInt(localStorage.getItem(usageKey) || '0');
+        let remaining = Math.max(0, MAX_USES - currentUsage);
+        document.getElementById('limit-hint').innerText = `本设备剩余可用次数：${remaining}次`;
+    }
+    updateLimitUI();
+
+    // 3. 切换视图功能
+    function switchView(viewId) {
+        document.querySelectorAll('.view-container').forEach(el => el.classList.remove('active'));
+        document.getElementById(viewId).classList.add('active');
+    }
+
+    // 4. 解锁页面功能
+    function unlockPage() {
+        const msg = document.getElementById('gate-msg');
+        let usedCount = parseInt(localStorage.getItem(usageKey) || '0');
+        
+        // 检查次数
+        if (usedCount >= MAX_USES) {
+            msg.innerText = `宝子，本设备的测试次数已用完啦 (${MAX_USES}/${MAX_USES})`;
+            msg.style.opacity = 1;
+            shakeCard();
+            return;
+        }
+
+        // --- 验证通过 ---
+        msg.style.opacity = 0;
+        
+        // 1. 扣除次数
+        localStorage.setItem(usageKey, usedCount + 1);
+        
+        // 2. 播放动画
+        document.getElementById('load-layer').style.display = 'flex';
+        const txt = document.getElementById('load-text');
+        
+        setTimeout(() => { txt.innerText = "正在加载专属报告..."; }, 800);
+        setTimeout(() => { 
+            let left = MAX_USES - (usedCount + 1);
+            txt.innerText = `加载成功！(剩余${left}次)`; 
+            txt.style.color = "#ff2442"; 
+        }, 1500);
+        
+        // 3. 解锁页面
+        setTimeout(() => {
+            sessionStorage.setItem('unlocked_' + pageId, 'true');
+            document.getElementById('gate-modal').style.opacity = 0;
+            setTimeout(() => { 
+                document.getElementById('gate-modal').style.display = 'none'; 
+            }, 500);
+        }, 2500);
+    }
+
+    // 震动动画
+    function shakeCard() {
+        const card = document.getElementById('main-card');
+        card.style.animation = 'shake 0.3s';
+        setTimeout(() => { card.style.animation = ''; }, 300);
+    }
+</script>
+</body>
+</html>
